@@ -1,7 +1,10 @@
 import { getGeocode } from "backend/mapGeocode.jsw";
-import { getAutocomplete, getZipcode } from "backend/placesAutocomplete.jsw"
+import { getAutocomplete, getZipcode } from "backend/placesAutocomplete.jsw";
+import { getApiKey } from "backend/getMapAPI.jsw";
 
-$w.onReady(function () {
+$w.onReady(async function () {
+    const key = await getApiKey();
+
     let lastAddress = "";
     let currentAddress = "";
 
@@ -23,15 +26,13 @@ $w.onReady(function () {
 
     $w("#selectionMap").onMessage((event) => {
         if (event.data.type === "mapReady") {
-
             mapValues = {
+                "src": key,
                 "lat": initialLat,
                 "lng": initialLng,
                 "zoom": 10,
                 "marker": false
             }
-
-            console.log(mapValues);
             $w("#selectionMap").postMessage(JSON.stringify(mapValues));
         }
     });
@@ -53,8 +54,6 @@ $w.onReady(function () {
                     "place_id": prediction.place_id,
                     "address": prediction.description
                 }));
-
-                console.log("Formatted Suggestions:", suggestions);
 
                 // Update repeater data
                 $w("#repeaterSuggestions").data = suggestions;
@@ -101,6 +100,7 @@ $w.onReady(function () {
             getGeocode(currentAddress)
                 .then((geocode) => {
                     mapValues = {
+                        "src": key,
                         "lat": geocode.results[0].geometry.location.lat,
                         "lng": geocode.results[0].geometry.location.lng,
                         "zoom": 18,
@@ -108,7 +108,6 @@ $w.onReady(function () {
                     }
 
                     // Hand houseValues to html block code to update map
-                    console.log(mapValues);
                     $w("#selectionMap").postMessage(JSON.stringify(mapValues));
                 })
                 .catch((error) => console.error("Geocode Error: ", error));
@@ -118,8 +117,6 @@ $w.onReady(function () {
     // Uses the repeater to show Places API results for user selection
     function repeaterSuggestionsReady($item, itemData) {
         if (!itemData || !itemData.address) return; // Prevent errors if no data
-
-        console.log("Repeater item ready:", itemData);
 
         // Set the text of the suggestion inside the repeater item
         $item("#textSuggestions").text = itemData.address;
@@ -133,7 +130,6 @@ $w.onReady(function () {
     async function handleSuggestionClick(itemData) {
         try {
             const zip = await getZipcode(itemData.place_id);
-            console.log("Address zipcode: ", zip);
 
             let formattedAddress = itemData.address;
             if (zip && formattedAddress.includes(", CA, USA")) {
