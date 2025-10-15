@@ -14,7 +14,9 @@ when opting into a free home evaluation analysis.
   input address is correct.
 - The placesAutocomplete.js file simply requests autocomplete information from the Google Places API using the Wix
   secrets locker that stores the API key. When appropriate matches are achieved they are pushed to the frontend code
-  via JSON in order to update the repeater block. This also generates geocode data to update the HTML block on the
-  frontend.
+  via JSON in order to update the repeater block.
+- The mapGeocode.js file generates geocode data to update the HTML block on the frontend. When the user submits the first
+  portion of the form by clicking the "Next" button, the frontend code requests a geocode value from this file, which is
+  also pushed to the frontend using JSON.
 - The HTML block is simple and starts with default geocode data to display the map before being updated via the frontend
   code to display the user input address upon user form submital.
