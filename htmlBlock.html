@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  	
+  	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<title>Google House Search Map</title>
+  
+</head>
+<body>
+  
+  	<div id="map"></div>
+  
+</body>
+</html>
+
+<style>
+  	
+  	html,
+	body {
+    	height: 100%;
+    	margin: 0;
+    	padding: 0;
+	}
+
+	#map {
+    	height: 100%;
+	}
+  
+</style>
+
+<script>
+    let map;
+    let marker;
+
+    // Listen for data from Wix frontend
+    window.onmessage = (event) => {
+      if (!event.data) return;
+
+      const received = JSON.parse(event.data);
+      const key = received.src;
+
+      // Save map parameters for callback
+      window.mapParams = received;
+
+      // Dynamically load Google Maps script
+      const script = document.createElement("script");
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&callback=initMap`;
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+    };
+
+    // Tell Wix that the iframe is ready to receive data
+    window.onload = function () {
+      window.parent.postMessage({ type: "mapReady" }, "*");
+    };
+
+    // Called automatically once Google Maps loads
+    async function initMap() {
+      const { lat, lng, zoom, marker: showMarker } = window.mapParams;
+
+      const { Map } = await google.maps.importLibrary("maps");
+      const { Marker } = await google.maps.importLibrary("marker");
+
+      console.log("Initializing map at:", lat, lng);
+
+      map = new Map(document.getElementById('map'), {
+        center: { lat, lng },
+        zoom: zoom,
+      });
+
+      if (showMarker) {
+        new Marker({
+          position: { lat, lng },
+          map: map,
+        });
+      }
+    }
+  </script>
+</body>
+</html>
