@@ -19,7 +19,9 @@ when opting into a free home evaluation analysis.
   portion of the form by clicking the "Next" button, the frontend code requests a geocode value from this file, which is
   also pushed to the frontend using JSON.
 - The HTML block is simple and starts with default geocode data to display the map before being updated via the frontend
-  code to display the user input address upon user form submital.
+  code to display the user input address upon user form submital. The map obtains the API key from the secrets locker from
+  the frontend code at runtime along with the default or user requested coordinates to display the map without exposing the
+  key to users via a request to the backend. The API key is then injected programmatically into the HTML block as a script. 
 
 ## License
 
