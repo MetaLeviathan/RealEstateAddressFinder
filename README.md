@@ -20,3 +20,11 @@ when opting into a free home evaluation analysis.
   also pushed to the frontend using JSON.
 - The HTML block is simple and starts with default geocode data to display the map before being updated via the frontend
   code to display the user input address upon user form submital.
+
+## License
+
+This project is proprietary and not open source.
+
+The source code is provided for personal reference and educational purposes only.
+Any reuse, redistribution, or modification without explicit written permission
+from the author is strictly prohibited.
